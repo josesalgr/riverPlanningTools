@@ -1,0 +1,20 @@
+---
+output: github_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+## Installation
+The latest development version of riverPlanningTools can be installed from GitHub using the following code.
+
+```{r, eval = FALSE}
+if (!require(remotes)) install.packages("remotes")
+remotes::install_github("EnvironmentalDecisions/riverPlanningTools")
+```
