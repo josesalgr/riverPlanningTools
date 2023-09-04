@@ -17,7 +17,7 @@
 #' @return A [data.frame()].
 #' @examples
 #' \donttest{
-#' boundaryBuilder(file, distance_limit = 100, connection_limit = 20, export_csv = FALSE)
+#'  boundaryBuilder(file, distance_limit = 100, connection_limit = 20, export_csv = FALSE)
 #' }
 #'
 #' @rdname boundaryBuilder
@@ -25,78 +25,46 @@
 #' @import methods utils
 
 boundaryBuilder <- function(file, distance_limit = .Machine$integer.max,
-                                  connection_limit = .Machine$integer.max,
-                                  export_csv = FALSE){
-
+                            connection_limit = .Machine$integer.max,
+                            export_csv = FALSE, id = "GridID", nxt = "NextDownID", len = "Length"){
+  
   #checking if the input is a shapefile
   if(methods::is(file, "SpatialLinesDataFrame") || is(file, "SpatialPolygonsDataFrame")){
     df = ggplot2::fortify(file@data)
-
+    
     #checking if the variables exists
-    var = c("GridID","NextDownID","Length")
+    var = c(id, nxt, len)
+    if(!all(var %in% colnames(df))){
+      var_needed <- which(!var %in% colnames(df))
+      stop(paste("The following variables are needed: ", var[var_needed]), call. = FALSE)
+    }
+    
+    df <- df[,var]
+  }
+  else if(is.data.frame(file)){
+    
+    #checking if the variables exists
+    var = c(id, nxt, len)
     if(!all(var %in% colnames(df))){
       var_needed <- which(!var %in% colnames(df))
       stop(paste("The following variables are needed: ", var[var_needed]),call. = FALSE)
     }
-
-    #changing hydros values by grids values
-    #if(df$GridID[1] != df$HydroID[1])
-    #{
-    #  df <- df[order(df$GridID),]
-    #  df$NextDownID <- match(df$NextDownID,df$HydroID)
-    #  df$NextDownID[is.na(df$NextDownID)] <- -1
-    #  df <- df[,var]
-    #}
-    df <- df[,var]
-  }
-  else if(is.data.frame(file)){
+      
+    if(any(file[id][[1]] == file[nxt][[1]])){
+      stop("There are ID's whith equal value of NextGridID.", call. = FALSE)
+    }
+    #rows_failed <- which(file[id][[1]] == file[nxt][[1]])
+    #file[nxt][[1]][rows_failed] <- -1
+    
     df = file
   }
   else{
     stop("Incompatible file (SpatialLinesDataFrame or DataFrame required)", call. = FALSE)
   }
-
+  
   #creating empty data frame to distances
-  length_df <- length(df$GridID)
-  data_distances <- data.frame(id=integer(0),
-                             down=integer(0),
-                             distance=double(0))
-
-  row_distances_data = 1
-  for(i in 1:length_df)
-  {
-    #internal parameters
-    row_df = i
-    count_distance = 0
-    n_connections = 0
-
-    while(df$NextDownID[row_df] != -1)
-    {
-      #stop by number of connections
-      if(n_connections == connection_limit || count_distance + df[row_df,3] >= distance_limit){
-        break
-      }
-
-      #adding next down cell to distances data frame
-      data_distances[row_distances_data,] <- list(df$GridID[i], df$NextDownID[row_df], count_distance + df[row_df,3])
-
-      count_distance <- count_distance + df[row_df,3]
-      row_df <- which(df$GridID==df$NextDownID[row_df])[1]
-
-
-      row_distances_data = row_distances_data + 1
-      n_connections = n_connections + 1
-
-    }
-    #adding last connection
-    if(df$NextDownID[row_df] == -1 && n_connections != connection_limit){
-      data_distances[row_distances_data,] <- list(df$GridID[i], df$NextDownID[row_df], count_distance + df[row_df,3])
-
-      row_distances_data = row_distances_data + 1
-    }
-  }
-  rownames(data_distances) <- c(1:nrow(data_distances))
-
+  data_distances <- timesTwo(df, connection_limit, distance_limit, id, nxt, len)
+  
   if(export_csv == FALSE){
     return(data_distances)
   }
@@ -104,6 +72,7 @@ boundaryBuilder <- function(file, distance_limit = .Machine$integer.max,
     utils::write.csv(data_distances, file="Longitudinal_distance.csv", row.names = FALSE)
   }
 }
+
 
 #How to use---------------------------------------------------------
 #From .csv

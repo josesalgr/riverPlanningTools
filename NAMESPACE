@@ -3,3 +3,5 @@
 export(boundaryBuilder)
 import(methods)
 import(utils)
+importFrom(Rcpp,sourceCpp)
+useDynLib(riverPlanningTools)
