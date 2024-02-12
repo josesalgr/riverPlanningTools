@@ -22,7 +22,7 @@ DataFrame timesTwo(DataFrame x, int connection_limit, int distance_limit, String
     
     //internal parameters
     int row_df = i;
-    int count_distance = 0;
+    double count_distance = 0;
     int n_connections = 0;
     bool in_memory = false;
   
@@ -64,9 +64,14 @@ DataFrame timesTwo(DataFrame x, int connection_limit, int distance_limit, String
       // }
       // else{
         auto new_id = find(GridID.begin(), GridID.end(), NextDownID[row_df]) - GridID.begin();
+
+        //if(new_id == row_df){
         row_df = new_id;
         row_distances_data++;
         n_connections++;
+          //break;
+        //}
+        //std::cout << new_id << std::endl;
       // }
     }
     //adding last connection
