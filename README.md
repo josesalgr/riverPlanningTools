@@ -6,5 +6,5 @@ from GitHub using the following code.
 
 ``` r
 if (!require(remotes)) install.packages("remotes")
-remotes::install_github("EnvironmentalDecisions/riverPlanningTools")
+remotes::install_github("josesalgr/riverPlanningTools")
 ```
