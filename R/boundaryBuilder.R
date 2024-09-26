@@ -43,6 +43,8 @@ boundaryBuilder <- function(file, distance_limit = .Machine$integer.max,
   }
   else if(is.data.frame(file)){
     
+    df = file
+    
     #checking if the variables exists
     var = c(id, nxt, len)
     if(!all(var %in% colnames(df))){
@@ -55,8 +57,7 @@ boundaryBuilder <- function(file, distance_limit = .Machine$integer.max,
     }
     #rows_failed <- which(file[id][[1]] == file[nxt][[1]])
     #file[nxt][[1]][rows_failed] <- -1
-    
-    df = file
+  
   }
   else{
     stop("Incompatible file (SpatialLinesDataFrame or DataFrame required)", call. = FALSE)
