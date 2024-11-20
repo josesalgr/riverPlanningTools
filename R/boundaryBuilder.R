@@ -23,6 +23,8 @@
 #' @rdname boundaryBuilder
 #' @export
 #' @import methods utils
+#' @importFrom Rcpp evalCpp
+#' @useDynLib riverPlanningTools, .registration = TRUE
 
 boundaryBuilder <- function(file, distance_limit = .Machine$integer.max,
                             connection_limit = .Machine$integer.max,

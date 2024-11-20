@@ -2,6 +2,6 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 timesTwo <- function(x, connection_limit, distance_limit, df_id, df_nxt, df_len) {
-    .Call('_riverPlanningTools_timesTwo', PACKAGE = 'riverPlanningTools', x, connection_limit, distance_limit, df_id, df_nxt, df_len)
+    .Call(`_riverPlanningTools_timesTwo`, x, connection_limit, distance_limit, df_id, df_nxt, df_len)
 }
 
