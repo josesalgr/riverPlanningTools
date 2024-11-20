@@ -14,7 +14,12 @@ Imports:
   ggplot2,
   methods,
   utils, 
-  Rcpp
+  Rcpp,
+  sf,
+  lwgeom,
+  data.table,
+  dplyr,
+  igraph
 LinkingTo: 
   Rcpp
 License: GPL(>=2)
